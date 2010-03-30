@@ -2,84 +2,132 @@
 
 class bancfiles_n34 extends bancfiles{
   
+        // definim l'ordenant
         private $ordenante;
 
-        private $beneficiario = array();
+        // definim els beneficiaris
+        private $beneficiarios;
         
-        private $esnomina;
-        
-//        private $dataemisio;
-//        private $dataordres;
-        
+        // suma total dels imports
         private $sumatotal;
         
+        // suma total de linies
         private $linies;
+        
+        // suma total de linies tipus 10 que son les que tenen els imports
+        // coincideix amb els beneficiaris
+        private $linies_diez;
         
         public function __construct(){
         
+              $this->sumatotal = 0;        
+
+              $this->linies = 0;
+
+              $this->linies_diez = 0;
         
-                $this->esnomina  = false;
-                
-                
-                $this->sumatotal = 0;        
-                $this->linies = 0;
+              $this->ordenante = NULL;
+              $this->beneficiarios = array();
+              
+              $this->buffer = '';
         
         }
-        
+        // :factory que retorna un nou ordenant
         public static function ordenante(){
-                $classname = 'bancfiles_n34_ordenante';
+              $classname = 'bancfiles_n34_ordenante';
                 
-                return new $classname;
+              return new $classname;
         }    
         
+        // :factory que retorna una beneficiari
         public static function beneficiario(){
-                $classname = 'bancfiles_n34_beneficiario';
+              $classname = 'bancfiles_n34_beneficiario';
                 
-                return new $classname;
+              return new $classname;
         }
         
+        // assigna un ordenant
         public function setOrdenante(bancfiles_n34_ordenante $ord){
         
-                $this->ordenante = $ord;
+              $this->ordenante = $ord;
             
-                return $this;
+              return $this;
         }
 
         public function setBeneficiari( bancfiles_n34_beneficiario $ben){
           
-                if ($ben->importe >0){
+              if ($ben->importe >0){
     
-                    $this->sumatotal += $ben->importe;
+    
+                    // afegim aquest import a la suma total
+                    $this->sumatotal = $ben->importe;
+    
+                    // cambiem el format per posarlo al fitxer
+                    $importe = sprintf('%01.2f',$ben->importe);
+                    $importe = str_replace('.','',$import);          
+    
+                    // substituim pel nou format
+                    $ben->importe = $importe;
           
-                    $this->beneficiario[] = $ben;
-                }
+                    // afegim el beneficiari a la llista
+                    $this->beneficiarios[] = $ben;
+              }
               
-                return $this;        
+              return $this;        
         
-        }
-        
-        public function esNomina((BOOL) $nomina){
-                
-                $this->esnomina = $nomina;
-                
-                return $this;
         }
         
         public function generar(){
+              
+              // si no hi ha ordenant llancem una excepcio
+              ($this->ordenante instanceof bancfiles_n34_ordenante) or throw new Bancfiles_Exception('Ordenante no existente');
+              
+              // si no hi ha beneficiaris llancem una excepcio
+              if (($this->linies_diez = count($this->beneficiarios)) ==0) {
+                   throw new Bancfiles_Exception('Beneficiarios == 0');
+              }
         
-              $this->buffer = $this->ordenante->generar_cap(); $this->linies++;
+              $this->buffer = $this->ordenante->generar_cap()
+                              .$this->ordenante->generar_nombre()
+                              .$this->ordenante->generar_domicilio()
+                              .$this->ordenante->generar_plaza();
               
-              $this->buffer .= $this->ordenante->generar_nombre(); $this->linies++;
+              $this->linies += 4;
               
-              $this->buffer .= $this->ordenante->generar_domicilio(); $this->linies++;
+              foreach ($this->beneficiarios as $beneficiario){
               
-              $this->buffer .= $this->ordenante->generar_plaza(); $this->linies++;
-              
-              
-        
+                  $this->buffer  =  $this->buffer
+                                    .$beneficiario->generar_registre10($this->ordenante->nif)
+                                    .$beneficiario->generar_registre11($this->ordenante->nif);
+                  
+                  $this->linies += 2;
+                  
+              } 
+               
+              $this->linies++;
+              $this->buffer .= $this->generar_totals();
+                     
               return $this;
         }
+  
+        public function buffer(){
+  
+              return (string)$this->buffer;
+  
+        }
         
+        private function generar_totals(){
         
+              return '0856'
+                     .bancfiles::add_rchar($this->ordenante->nif,10)
+                     .bancfiles::space(12)
+                     .bancfiles::space(3)
+                     .bancfiles::zeros( $this->sumatotal, 12)
+                     .bancfiles::zeros( $this->linies_diez, 8)
+                     .bancfiles::zeros( $this->linies, 10)
+                     .bancfiles::space(6)
+                     .bancfiles::space(7);
+                     
+        }
         
 }
