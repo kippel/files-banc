@@ -1,8 +1,8 @@
 <? defined('SYSPATH') or die('no direct access allowed');
 
-class bancfiles_n34_ordenante {
+class bancfiles_n34_ordenante extends bancfiles_n34_fields {
 
-    public function init(){
+   protected function init(){
         $this->fields = array(
             'nombre',
             'plaza',
@@ -15,14 +15,13 @@ class bancfiles_n34_ordenante {
         );
         
         $this->dataemisio = date('dmy');
-        $this->dataordre = date('dmy');
+        $this->dataordres = date('dmy');
         
     }
 
-
-    private static function previ($nif);
+    private static function previ($nif){
     
-        return  '0356'.bancfiles::add_rchar($nif,10).$this->espai(12);
+        return  '0356'.bancfiles::add_rchar($nif,10).bancfiles::space(12);
                         
     }
     
@@ -44,7 +43,7 @@ class bancfiles_n34_ordenante {
     
           return bancfiles_n34_ordenante::previ($nif)
                  .$id
-                 .bancfiles::add_rchar($values,36)
+                 .bancfiles::add_rchar($value,36)
                  .bancfiles::space(7)
                  .SLINIA;
     

@@ -21,7 +21,7 @@ abstract class bancfiles {
     
     public static function zeros($num, $zeros){
     
-          return str_pad($num, $zeros, "0", STR_PAD_LEFT)
+          return str_pad($num, $zeros, "0", STR_PAD_LEFT);
     
     }
     
@@ -35,12 +35,12 @@ abstract class bancfiles {
     public static function add_char($c,$l){
         
           $c = substr($c,0,$l);
-          return $c . $this->espai($l-strlen($c));
+          return $c.bancfiles::space($l-strlen($c));
     }
                             
     public static function add_rchar($c,$l){
     
-          return substr(trim($this->espai($l-strlen($c)).$c), 0, $l);
+          return substr(trim(bancfiles::space($l-strlen($c)).$c), 0, $l);
     }
                                                             
                                                             

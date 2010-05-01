@@ -33,14 +33,14 @@ class bancfiles_n34 extends bancfiles{
         
         }
         // :factory que retorna un nou ordenant
-        public static function ordenante(){
+        public function ordenante(){
               $classname = 'bancfiles_n34_ordenante';
                 
               return new $classname;
         }    
         
         // :factory que retorna una beneficiari
-        public static function beneficiario(){
+        public function beneficiario(){
               $classname = 'bancfiles_n34_beneficiario';
                 
               return new $classname;
@@ -54,17 +54,17 @@ class bancfiles_n34 extends bancfiles{
               return $this;
         }
 
-        public function setBeneficiari( bancfiles_n34_beneficiario $ben){
+        public function addBeneficiario( bancfiles_n34_beneficiario $ben){
           
               if ($ben->importe >0){
     
     
                     // afegim aquest import a la suma total
-                    $this->sumatotal = $ben->importe;
+                    $this->sumatotal += $ben->importe;
     
                     // cambiem el format per posarlo al fitxer
                     $importe = sprintf('%01.2f',$ben->importe);
-                    $importe = str_replace('.','',$import);          
+                    $importe = str_replace('.','',$importe);          
     
                     // substituim pel nou format
                     $ben->importe = $importe;
@@ -80,10 +80,12 @@ class bancfiles_n34 extends bancfiles{
         public function generar(){
               
               // si no hi ha ordenant llancem una excepcio
-              ($this->ordenante instanceof bancfiles_n34_ordenante) or throw new Bancfiles_Exception('Ordenante no existente');
+              if (!$this->ordenante instanceof bancfiles_n34_ordenante) {
+                   throw new Bancfiles_Exception('Ordenante no existente');
+              }
               
               // si no hi ha beneficiaris llancem una excepcio
-              if (($this->linies_diez = count($this->beneficiarios)) ==0) {
+              if ( ($this->linies_diez = count($this->beneficiarios)) ==0) {
                    throw new Bancfiles_Exception('Beneficiarios == 0');
               }
         

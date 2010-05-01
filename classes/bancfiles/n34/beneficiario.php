@@ -1,6 +1,6 @@
 <? defined('SYSPATH') or die('no direct access allowed');
 
-class bancfiles_n34_beneficiario extends bancfiles_n34_field{
+class bancfiles_n34_beneficiario extends bancfiles_n34_fields{
 
       public function init(){
             $this->fields = array(
@@ -14,10 +14,21 @@ class bancfiles_n34_beneficiario extends bancfiles_n34_field{
       
       }
 
+      public function __set($id, $value){
+           
+           if ($id == 'nif' && strlen($value)>9){
+                 $value = substr($value,0,1).substr($value,2);
+           }
+           parent::__set($id,$value);
+                                                 
+      }
+                                                     
+
+
       public static function generar_pre0656($nif_ordenant, $nif_beneficiari){
             return '0656'
                    .bancfiles::add_rchar($nif_ordenant, 10)
-                   .bancfiles::add_rchar($this->nif, 12);
+                   .bancfiles::add_rchar($nif_beneficiari, 12);
       
       }
 
