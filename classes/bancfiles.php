@@ -6,13 +6,46 @@ abstract class bancfiles {
     
     protected $buffer;
 
+    protected static $config;
+    
+    public function __construct(){
+    	
+    	if (!self::$config instanceof Kohana_Config_File){
+    		self::$config = kohana::config('files-banc');
+    		
+    	}
+  	
+    }
+    
+    public function buffer(){
+  
+        return (string)$this->buffer;
+    }
+        
+    public function save($nom){
+    
+    	$path = isset(self::$config['path']) ? self::$config['path'] : '';
+    
+      	if (!is_dir($path) || !is_writable($path)){
+         	throw new Bancfiles_exception("path banc-files ".$path." not exist or not writable");
+          
+      	}
+        
+    	$file = $path.$nom;
+    	
+    	if (is_file($file)){
+    		throw new Bancfiles_exception('file already exists'. $file); 
+    	
+    	}
+    	
+    	file_put_contents( $file, $this->buffer());
+    
+    	return (bool)TRUE;
+    }
+    
+    
+    
     public static function factory( $name /*, array $values = NULL*/){
-
-
-          static $config;
-          $config  =  Kohana::config('files-banc');
-                 
-         var_dump($config);                 
                                   
     
           $classname = 'bancfiles_'.$name;

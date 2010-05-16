@@ -19,6 +19,9 @@ class bancfiles_n34 extends bancfiles{
         private $linies_diez;
         
         public function __construct(){
+        		
+        	  parent::__construct();
+        
         
               $this->sumatotal = 0;        
 
@@ -112,12 +115,6 @@ class bancfiles_n34 extends bancfiles{
               return $this;
         }
   
-        public function buffer(){
-  
-              return (string)$this->buffer;
-  
-        }
-        
         private function generar_totals(){
         
               return '0856'
