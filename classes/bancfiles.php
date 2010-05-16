@@ -7,6 +7,13 @@ abstract class bancfiles {
     protected $buffer;
 
     public static function factory( $name /*, array $values = NULL*/){
+
+
+          static $config;
+          $config  =  Kohana::config('files-banc');
+                 
+         var_dump($config);                 
+                                  
     
           $classname = 'bancfiles_'.$name;
           $class =  new $classname;
