@@ -1,6 +1,6 @@
 <? defined('SYSPATH') or die('no dirct allowed');
 
-define('SLINIA', '\n\r');
+define('SLINIA', "\n\r");
 
 abstract class bancfiles {
     
