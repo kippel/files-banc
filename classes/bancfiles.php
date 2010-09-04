@@ -1,6 +1,6 @@
 <? defined('SYSPATH') or die('no dirct allowed');
 
-define('SLINIA', "\n\r");
+define('SLINIA', "\n");
 
 abstract class bancfiles {
     
@@ -11,8 +11,8 @@ abstract class bancfiles {
     public function __construct(){
     	
     	if (!self::$config instanceof Kohana_Config_File){
-    		self::$config = kohana::config('files-banc');
-    		
+
+    		self::$config = kohana::config('files-banc');    		
     	}
   	
     }
@@ -27,15 +27,15 @@ abstract class bancfiles {
     	$path = isset(self::$config['path']) ? self::$config['path'] : '';
     
       	if (!is_dir($path) || !is_writable($path)){
-         	throw new Bancfiles_exception("path banc-files ".$path." not exist or not writable");
-          
+
+         	throw new Bancfiles_exception("path banc-files ".$path." not exist or not writable");          
       	}
         
     	$file = $path.$nom;
     	
     	if (is_file($file)){
-    		throw new Bancfiles_exception('file already exists'. $file); 
-    	
+
+    		throw new Bancfiles_exception('file already exists'. $file);     	
     	}
     	
     	file_put_contents( $file, $this->buffer());
@@ -61,14 +61,12 @@ abstract class bancfiles {
     
     public static function zeros($num, $zeros){
     
-          return str_pad($num, $zeros, "0", STR_PAD_LEFT);
-    
+          return str_pad($num, $zeros, "0", STR_PAD_LEFT);    
     }
     
     public static function space($num){
         
-          return str_pad('',$num,' ');
-        
+          return str_pad('',$num,' ');        
     }
 
     

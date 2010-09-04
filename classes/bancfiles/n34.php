@@ -35,8 +35,18 @@ class bancfiles_n34 extends bancfiles{
               $this->buffer = '';
         
         }
+        
+        private static function parseImport( $importe){
+    
+              $importe = sprintf('%01.2f',$importe);
+              $importe = str_replace('.','',$importe);          
+              
+              return $importe;        
+        }
+        
         // :factory que retorna un nou ordenant
         public function ordenante(){
+
               $classname = 'bancfiles_n34_ordenante';
                 
               return new $classname;
@@ -44,6 +54,7 @@ class bancfiles_n34 extends bancfiles{
         
         // :factory que retorna una beneficiari
         public function beneficiario(){
+
               $classname = 'bancfiles_n34_beneficiario';
                 
               return new $classname;
@@ -60,17 +71,13 @@ class bancfiles_n34 extends bancfiles{
         public function addBeneficiario( bancfiles_n34_beneficiario $ben){
           
               if ($ben->importe >0){
-    
-    
+        
                     // afegim aquest import a la suma total
                     $this->sumatotal += $ben->importe;
     
-                    // cambiem el format per posarlo al fitxer
-                    $importe = sprintf('%01.2f',$ben->importe);
-                    $importe = str_replace('.','',$importe);          
     
                     // substituim pel nou format
-                    $ben->importe = $importe;
+                    $ben->importe = self::parseImport($ben->importe);
           
                     // afegim el beneficiari a la llista
                     $this->beneficiarios[] = $ben;
@@ -84,11 +91,13 @@ class bancfiles_n34 extends bancfiles{
               
               // si no hi ha ordenant llancem una excepcio
               if (!$this->ordenante instanceof bancfiles_n34_ordenante) {
+
                    throw new Bancfiles_Exception('Ordenante no existente');
               }
               
               // si no hi ha beneficiaris llancem una excepcio
               if ( ($this->linies_diez = count($this->beneficiarios)) ==0) {
+
                    throw new Bancfiles_Exception('Beneficiarios == 0');
               }
         
@@ -97,31 +106,32 @@ class bancfiles_n34 extends bancfiles{
                               .$this->ordenante->generar_domicilio()
                               .$this->ordenante->generar_plaza();
               
-              $this->linies += 4;
-              
               foreach ($this->beneficiarios as $beneficiario){
               
                   $this->buffer  =  $this->buffer
                                     .$beneficiario->generar_registre10($this->ordenante->nif)
                                     .$beneficiario->generar_registre11($this->ordenante->nif);
                   
-                  $this->linies += 2;
                   
               } 
                
-              $this->linies++;
+              // 4 del ordenant
+              // 1 totals
+              // 2 per cada beneficiari
+              $this->linies = 5+(count($this->beneficiarios)<<1);
+
               $this->buffer .= $this->generar_totals();
                      
               return $this;
         }
   
         private function generar_totals(){
-        
+
               return '0856'
                      .bancfiles::add_rchar($this->ordenante->nif,10)
                      .bancfiles::space(12)
                      .bancfiles::space(3)
-                     .bancfiles::zeros( $this->sumatotal, 12)
+                     .bancfiles::zeros( self::parseImport($this->sumatotal), 12)
                      .bancfiles::zeros( $this->linies_diez, 8)
                      .bancfiles::zeros( $this->linies, 10)
                      .bancfiles::space(6)
