@@ -38,9 +38,9 @@ class bancfiles_n34 extends bancfiles{
         
         private static function parseImport( $importe){
     
-              $importe = sprintf('%01.2f',$importe);
+              $importe = number_format($importe,2, '.','');
               $importe = str_replace('.','',$importe);          
-              
+                            
               return $importe;        
         }
         
@@ -75,7 +75,7 @@ class bancfiles_n34 extends bancfiles{
                     // afegim aquest import a la suma total
                     $this->sumatotal += $ben->importe;
     
-    
+                    
                     // substituim pel nou format
                     $ben->importe = self::parseImport($ben->importe);
           

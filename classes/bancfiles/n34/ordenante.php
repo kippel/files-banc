@@ -50,17 +50,17 @@ class bancfiles_n34_ordenante extends bancfiles_n34_fields {
     
     public function generar_nombre(){
           
-          return bancfiles_n34_ordenante::generar_caps('001', $this->nif, $this->nombre);     
+          return bancfiles_n34_ordenante::generar_caps('002', $this->nif, $this->nombre);     
     }
                                                                                  
     public function generar_domicilio(){
 
-           return bancfiles_n34_ordenante::generar_caps('002', $this->nif, $this->domicilio);
+          return bancfiles_n34_ordenante::generar_caps('003', $this->nif, $this->domicilio);
     }
     
     public function generar_plaza(){
   
-           return bancfiles_n34_ordenante::generar_caps('003', $this->nif, $this->plaza);  
+          return bancfiles_n34_ordenante::generar_caps('004', $this->nif, $this->plaza);  
     }
     
 
