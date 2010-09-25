@@ -78,7 +78,7 @@ abstract class bancfiles {
                             
     public static function add_rchar($c,$l){
     
-          return substr(bancfiles::space($l-strlen($c).$c), 0, $l);
+          return substr(bancfiles::space($l-strlen($c)).$c, 0, $l);
     }
                                                             
                                                             
