@@ -72,13 +72,13 @@ abstract class bancfiles {
     
     public static function add_char($c,$l){
         
-          $c = mb_substr($c,0,$l);
-          return $c.bancfiles::space($l-mb_strlen($c));
+          $c = substr($c,0,$l);
+          return $c.bancfiles::space($l-strlen($c));
     }
                             
     public static function add_rchar($c,$l){
     
-          return mb_substr(bancfiles::space($l-mb_strlen($c)).$c, 0, $l);
+          return substr(bancfiles::space($l-strlen($c)).$c, 0, $l);
     }
                                                             
                                                             
