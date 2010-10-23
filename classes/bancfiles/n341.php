@@ -136,7 +136,7 @@ class bancfiles_n341 extends bancfiles{
                      .bancfiles::zeros( $this->linies_diez, 8)
                      .bancfiles::zeros( $this->linies, 10)
                      .bancfiles::space(6)
-                     .bancfiles::space(7);
+                     .bancfiles::space(5);
                      
         }
         
