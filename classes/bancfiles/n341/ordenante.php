@@ -13,11 +13,13 @@ class bancfiles_n341_ordenante extends bancfiles_n341_fields {
             'cuenta',
             'nif',
             'dataemisio',
-            'dataordres'
+            'dataordres',
+            'sufijo'
         );
         
         $this->dataemisio = date('dmy');
         $this->dataordres = date('dmy');
+        $this->sufijo = '000';
         
     }
    
@@ -35,10 +37,12 @@ class bancfiles_n341_ordenante extends bancfiles_n341_fields {
      *    En el primer tipo de registro obligatorio del ordenante, podría figurar
      *    opcionalmente una Referencia del ordenante.
      */
-    private static function previ($nif){
+    private static function previ($nif, $sufijo){
     
-        return  '0362'.bancfiles::add_rchar($nif,9).'000'.bancfiles::space(12);
-                        
+        return  '0362'
+                .bancfiles::add_rchar($nif, 9)
+                .bancfiles::zeros($sufijo, 3)
+                .bancfiles::space(12);                        
     }
    
     /**
@@ -56,18 +60,17 @@ class bancfiles_n341_ordenante extends bancfiles_n341_fields {
      *  0 – Sin detalle
      *  1 – Con detalle
      * Zona G: Libre = 8
-     */
-    
+     */    
     public function generar_cap(){
         
-          return self::previ($this->nif)
+          return self::previ($this->nif, $this->sufijo)
                  .'001'
                  .$this->dataemisio
                  .$this->dataordres
-                 .bancfiles::zeros($this->entidad,4)
-                 .bancfiles::zeros($this->oficina,4)
-                 .bancfiles::zeros($this->control,2)
-                 .bancfiles::zeros($this->cuenta,10)
+                 .bancfiles::zeros($this->entidad, 4)
+                 .bancfiles::zeros($this->oficina, 4)
+                 .bancfiles::zeros($this->control, 2)
+                 .bancfiles::zeros($this->cuenta, 10)
                  .'0'
                  .bancfiles::space(8)
                  .SLINIA;
@@ -104,11 +107,11 @@ class bancfiles_n341_ordenante extends bancfiles_n341_fields {
           return self::generar_caps('004', $this->nif, $this->plaza);  
     }
     
-    private static function generar_caps($id, $nif,$value){
+    private static function generar_caps($id, $nif, $value){
     
-          return self::previ($nif)
+          return self::previ($nif, $this->sufijo)
                  .$id
-                 .bancfiles::add_rchar($value,36)
+                 .bancfiles::add_rchar($value, 36)
                  .bancfiles::space(5)
                  .SLINIA;
     }

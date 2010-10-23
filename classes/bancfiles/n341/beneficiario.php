@@ -4,6 +4,7 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
 
       public function init(){
             $this->fields = array(
+                'sufijo',
                 'importe',
                 'entidad',
                 'oficina',
@@ -13,15 +14,16 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
                 'nombre',
                 'es_nomina'
             );
-      
+            $this->sufijo = '000';
       }
 
       public function __set($id, $value){
            
            if ($id == 'nif' && strlen($value)>9){
-                 $value = substr($value,0,1).substr($value,2);
+
+                 $value = substr($value, 0, 1).substr($value, 2);
            }
-           parent::__set($id,$value);
+           parent::__set($id, $value);
                                                  
       }
       /**
@@ -34,12 +36,12 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
        *  pensiones o pagos sucesivos. Puede ser el N.I.F., número de matrícula,
        *  número de la Seguridad Social, etc.
        */
-      public static function generar_pre0656($nif_ordenant, $nif_beneficiari){
+      protected function generar_pre0656($nif_ordenant, $sufijo){
+      
             return '0656'
                    .bancfiles::add_rchar($nif_ordenant, 9)
-                   .'000'
-                   .bancfiles::add_rchar($nif_beneficiari, 12);
-      
+                   .bancfiles::zeros($sufijo, 3)
+                   .bancfiles::add_rchar($this->nif, 12);      
       }
       
       /**
@@ -72,16 +74,15 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
        *  consignarlo
        *  Zona G: Libre = 6
        */
-
-      public function generar_registre10($nif_ordenant){
+      public function generar_registre10($nif_ordenant, $sufijo){
       
-            $buff =  self::generar_pre0656($nif_ordenant, $this->nif)
+            $buff =  $this->generar_pre0656($nif_ordenant, $sufijo)
                      .'010'
-                     .bancfiles::zeros($this->importe,12)
-                     .bancfiles::zeros($this->entidad,4)
-                     .bancfiles::zeros($this->oficina,4)
-                     .bancfiles::zeros($this->control,2)
-                     .bancfiles::zeros($this->cuenta,10)
+                     .bancfiles::zeros($this->importe, 12)
+                     .bancfiles::zeros($this->entidad, 4)
+                     .bancfiles::zeros($this->oficina, 4)
+                     .bancfiles::zeros($this->control, 2)
+                     .bancfiles::zeros($this->cuenta, 10)
                      .'1';
             
             $buff .= ($this->es_nomina) ? '1' : '9';
@@ -90,8 +91,7 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
                      .bancfiles::space(6)
                      .SLINIA;                    
             
-            return $buff;
-                               
+            return $buff;                               
       }
 
       /**
@@ -99,11 +99,11 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
        * Zona F: Nombre del beneficiario. Obligatorio
        * Zona G: Libre
        */
-      public function generar_registre11($nif_ordenant){
+      public function generar_registre11($nif_ordenant, $sufijo){
       
-           $buff = self::generar_pre0656($nif_ordenant, $this->nif)
+           $buff = $this->generar_pre0656($nif_ordenant, $sufijo)
                    .'011'
-                   .bancfiles::add_char($this->nombre,36)
+                   .bancfiles::add_char($this->nombre, 36)
                    .bancfiles::space(5)
                    .SLINIA;
       

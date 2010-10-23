@@ -109,8 +109,8 @@ class bancfiles_n341 extends bancfiles{
               foreach ($this->beneficiarios as $beneficiario){
               
                   $this->buffer  =  $this->buffer
-                                    .$beneficiario->generar_registre10($this->ordenante->nif)
-                                    .$beneficiario->generar_registre11($this->ordenante->nif);
+                                    .$beneficiario->generar_registre10($this->ordenante->nif, $this->ordenante->sufijo)
+                                    .$beneficiario->generar_registre11($this->ordenante->nif, $this->ordenante->sufijo);
                   
                   
               } 
@@ -129,7 +129,7 @@ class bancfiles_n341 extends bancfiles{
 
               return '0962'
                      .bancfiles::add_rchar($this->ordenante->nif,9)
-                     .'000'
+                     .bancfiles::zeros( $this->ordenante->sufijo, 3)
                      .bancfiles::space(12)
                      .bancfiles::space(3)
                      .bancfiles::zeros( self::parseImport($this->sumatotal), 12)
