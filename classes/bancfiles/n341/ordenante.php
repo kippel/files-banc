@@ -84,7 +84,7 @@ class bancfiles_n341_ordenante extends bancfiles_n341_fields {
      */
     public function generar_nombre(){
           
-          return self::generar_caps('002', $this->nif, $this->nombre);     
+          return $this->generar_caps('002',  $this->nombre);     
     }
     
     /**
@@ -94,7 +94,7 @@ class bancfiles_n341_ordenante extends bancfiles_n341_fields {
      */                                                                             
     public function generar_domicilio(){
 
-          return self::generar_caps('003', $this->nif, $this->domicilio);
+          return $this->generar_caps('003', $this->domicilio);
     }
     
     /**
@@ -104,12 +104,12 @@ class bancfiles_n341_ordenante extends bancfiles_n341_fields {
      */
     public function generar_plaza(){
   
-          return self::generar_caps('004', $this->nif, $this->plaza);  
+          return $this->generar_caps('004', $this->plaza);  
     }
     
-    private static function generar_caps($id, $nif, $value){
+    private function generar_caps($id, $value){
     
-          return self::previ($nif, $this->sufijo)
+          return self::previ($this->nif, $this->sufijo)
                  .$id
                  .bancfiles::add_rchar($value, 36)
                  .bancfiles::space(5)
