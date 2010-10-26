@@ -127,7 +127,7 @@ class bancfiles_n341 extends bancfiles{
   
         private function generar_totals(){
 
-              return '0962'
+              return '0856'
                      .bancfiles::add_rchar($this->ordenante->nif,9)
                      .bancfiles::zeros( $this->ordenante->sufijo, 3)
                      .bancfiles::space(12)

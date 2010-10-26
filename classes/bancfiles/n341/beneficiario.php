@@ -38,7 +38,7 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
        */
       protected function generar_pre0656($nif_ordenant, $sufijo){
       
-            return '0656'
+            return '0456'
                    .bancfiles::add_rchar($nif_ordenant, 9)
                    .bancfiles::zeros($sufijo, 3)
                    .bancfiles::add_rchar($this->nif, 12);      
