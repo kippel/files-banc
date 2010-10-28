@@ -86,6 +86,15 @@ class bancfiles_n341 extends bancfiles{
               return $this;        
         
         }
+
+        private static function generar_header($nif_ordenant, $sufijo){
+              return '0456'
+                     .bancfiles::add_rchar($nif_ordenant, 9)
+                     .bancfiles::zeros($sufijo, 3)
+                     .bancfiles::space(56)
+                     .SLINIA;
+        }
+                                                                                                     
         
         public function generar(){
               
@@ -105,8 +114,11 @@ class bancfiles_n341 extends bancfiles{
                               .$this->ordenante->generar_nombre()
                               .$this->ordenante->generar_domicilio()
                               .$this->ordenante->generar_plaza();
+        
+              $this->buffer .= self::generar_header($this->ordenante->nif, $this->ordenante->sufijo);      
               
               foreach ($this->beneficiarios as $beneficiario){
+              
               
                   $this->buffer  =  $this->buffer
                                     .$beneficiario->generar_registre10($this->ordenante->nif, $this->ordenante->sufijo)
@@ -115,14 +127,33 @@ class bancfiles_n341 extends bancfiles{
                   
               } 
                
-              // 4 del ordenant
+              // 4 del ordenant NO
+              // 1 header
               // 1 totals
               // 2 per cada beneficiari
-              $this->linies = 5+(count($this->beneficiarios)<<1);
+              $this->linies = 2+(count($this->beneficiarios)<<1);
 
               $this->buffer .= $this->generar_totals();
+
+              $this->buffer .= $this->generar_totals2();
                      
               return $this;
+        }
+        
+        private function generar_totals2(){
+           
+             return '0962'
+                    .bancfiles::add_rchar($this->ordenante->nif, 9)
+                    .bancfiles::zeros($this->ordenante->sufijo, 3)
+                    .bancfiles::space(12)
+                    .bancfiles::space(3)
+                    .bancfiles::zeros( self::parseImport($this->sumatotal), 12)
+                    .bancfiles::zeros( $this->linies_diez, 8)
+                    .bancfiles::zeros( $this->linies+5, 10)
+                    .bancfiles::space(6)
+                    .bancfiles::space(5);
+                    
+        
         }
   
         private function generar_totals(){
@@ -136,7 +167,8 @@ class bancfiles_n341 extends bancfiles{
                      .bancfiles::zeros( $this->linies_diez, 8)
                      .bancfiles::zeros( $this->linies, 10)
                      .bancfiles::space(6)
-                     .bancfiles::space(5);
+                     .bancfiles::space(5)
+                     .SLINIA;
                      
         }
         

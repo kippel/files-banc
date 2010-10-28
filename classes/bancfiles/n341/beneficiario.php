@@ -26,6 +26,8 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
            parent::__set($id, $value);
                                                  
       }
+      
+      
       /**
        * Zona A: Código de registro = 06
        * Zona B: Código de operación: 56 - Transferencia nacional ó 57 – Cheque Nómina/ bancario.
@@ -38,7 +40,7 @@ class bancfiles_n341_beneficiario extends bancfiles_n341_fields{
        */
       protected function generar_pre0656($nif_ordenant, $sufijo){
       
-            return '0456'
+            return '0656'
                    .bancfiles::add_rchar($nif_ordenant, 9)
                    .bancfiles::zeros($sufijo, 3)
                    .bancfiles::add_rchar($this->nif, 12);      
